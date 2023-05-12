@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resorts</title>
+</head>
+
+<body>
+    <h1>All Resorts</h1>
+    <div>
+        <a href="/resorts/new">Add Resorts</a>
+    </div>
+    <ul>
+        <% for (let resort of resorts){%>
+        <li><a href="/resorts/<%= resort._id %>"><%= resort.title %></a></li>
+        <% }%>
+    </ul>
+
+</body>
+
+</html>
