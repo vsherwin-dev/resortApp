@@ -1,26 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Resort</title>
-</head>
-
-<body>
-    <form action="/resorts" method="POST">
-        <div>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="resort[title]" required>
-        </div>
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="resort[location]" required>
-        </div>
-        <button>Add Resort</button>
-    </form>
-    <a href="/resorts">All Resort</a>
-
-</body>
-
-</html>
+<% layout('layouts/boilerplate')%>
+<form action="/resorts" method="POST">
+  <div>
+    <label for="title">Title</label>
+    <input type="text" id="title" name="resort[title]" required />
+  </div>
+  <div>
+    <label for="location">Location</label>
+    <input type="text" id="location" name="resort[location]" required />
+  </div>
+  <button>Add Resort</button>
+</form>
+<a href="/resorts">All Resort</a>

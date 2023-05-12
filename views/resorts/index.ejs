@@ -1,23 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<% layout('layouts/boilerplate')%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resorts</title>
-</head>
-
-<body>
-    <h1>All Resorts</h1>
-    <div>
-        <a href="/resorts/new">Add Resorts</a>
+<h1>All Resorts</h1>
+<div>
+    <a href="/resorts/new">Add Resort</a>
+</div>
+<% for (let resort of resorts){%>
+<div class="card" mb-3>
+    <div class="row">
+        <div class="col-md-4">
+            <img class="img-fluid" alt="" src="<%=resort.image%>">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title"><%= resort.title %> </h5>
+                <p class="card-text"><%= resort.description %></p>
+                <p class="card-text">
+                    <small class="text-muted"><%= resort.location%></small>
+                </p>
+                <a class="btn btn-primary" href="/resorts/<%=resort._id%>">View <%=resort.title%></a>
+            </div>
+        </div>
     </div>
-    <ul>
-        <% for (let resort of resorts){%>
-        <li><a href="/resorts/<%= resort._id %>"><%= resort.title %></a></li>
-        <% }%>
-    </ul>
-
-</body>
-
-</html>
+</div>
+<% }%>

@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Resort</title>
-</head>
-
-<body>
-    <h1>Edit Resort</h1>
-    <form action="/resorts/<%=resort._id%>?_method=PUT" method="POST">
-        <div>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="resort[title]" value="<%=resort.title %>">
-        </div>
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="resort[location]" value="<%= resort.location%>">
-        </div>
-        <button>Update Resort</button>
-    </form>
-    <a href="/resorts/<%= resort._id%>">Back To Resort</a>
-
-</body>
-
-</html>
+<% layout('layouts/boilerplate')%>
+<h1>Edit Resort</h1>
+<form action="/resorts/<%=resort._id%>?_method=PUT" method="POST">
+  <div>
+    <label for="title">Title</label>
+    <input
+      type="text"
+      id="title"
+      name="resort[title]"
+      value="<%=resort.title %>"
+    />
+  </div>
+  <div>
+    <label for="location">Location</label>
+    <input
+      type="text"
+      id="location"
+      name="resort[location]"
+      value="<%= resort.location%>"
+    />
+  </div>
+  <button>Update Resort</button>
+</form>
+<a href="/resorts/<%= resort._id%>">Back To Resort</a>
