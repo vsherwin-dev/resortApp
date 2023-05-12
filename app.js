@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 app.get('/', (req, res) => {
-    res.send('Working')
+    res.send('This is the homepage!')
 });
 
 app.listen(3000, () => {
