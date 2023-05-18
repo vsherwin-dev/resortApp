@@ -7,10 +7,10 @@
 </h2>
 <img src="<%=resort.image%>" alt="">
 <p><%=resort.description%></p>
-<p> <a href="/resorts/<%=resort._id%>/edit">Edit</a>
+<p> <a href="/resorts/<%=resort._id%>/edit" class="btn btn-warning">Edit</a>
 </p>
 <form action="/resorts/<%=resort._id%>?_method=DELETE" method="POST">
-    <button>Delete</button>
+    <button class="btn btn-danger">Delete</button>
 </form>
 
-<a href="/resorts">All Resorts</a>
+<a href="/resorts" class="my-3 btn btn-info">All Resorts</a>
