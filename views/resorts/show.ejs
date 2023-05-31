@@ -1,16 +1,55 @@
 <% layout('layouts/boilerplate')%>
-<h1>
-    <%= resort.title %>
-</h1>
-<h2>
-    <%= resort.location %>
-</h2>
-<img src="<%=resort.image%>" alt="">
-<p><%=resort.description%></p>
-<p> <a href="/resorts/<%=resort._id%>/edit" class="btn btn-warning">Edit</a>
-</p>
-<form action="/resorts/<%=resort._id%>?_method=DELETE" method="POST">
-    <button class="btn btn-danger">Delete</button>
-</form>
 
-<a href="/resorts" class="my-3 btn btn-info">All Resorts</a>
+<div class="row">
+    <div class="col-6">
+        <div class="card mb-3">
+            <img src="<%= resort.image%>" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"><%= resort.title%></h5>
+                <p class="card-text"><%= resort.description%></p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted"><%= resort.location%></li>
+                <li class="list-group-item">$<%= resort.price%>/night</li>
+            </ul>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/resorts/<%=resort._id%>/edit">Edit</a>
+                <form class="d-inline" action="/resorts/<%=resort._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            <div class="card-footer text-muted">
+                2 days ago
+            </div>
+        </div>
+
+    </div>
+    <div class="col-6">
+        <h2>Leave a Review</h2>
+        <form action="/resorts/<%=resort._id%>/reviews" method="POST" class="mb-3 validated-form" novalidate>
+            <div class="mb-3">
+                <label class="form-label" for="rating">Rating</label>
+                <input class="form-range" type="range" min="1" max="5" name="review[rating]" id="rating">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="body">Review</label>
+                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+            <button class="btn btn-success">Submit</button>
+        </form>
+        <% for(let review of resort.reviews) { %>
+        <div class="card mb-3 ">
+            <div class="card-body">
+                <h5 class="card-title">Rating: <%= review.rating %></h5>
+                <p class="card-text">Review: <%= review.body %></p>
+                <form action="/resorts/<%=resort._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>

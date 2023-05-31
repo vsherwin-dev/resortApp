@@ -3,12 +3,12 @@ const app = express();
 const path = require("path");
 const ejsMate = require("ejs-mate");
 const mongoose = require("mongoose");
-const { resortSchema } = require('./schemas.js');
+const { resortSchema, reviewSchema } = require('./schemas.js');
 const WrapAsync = require("./utility/wrapAsync");
 const AppError = require("./utility/AppError");
 const methodOverride = require("method-override");
 const Resort = require("./models/resort");
-// const { error } = require("console");
+const Review = require('./models/review');
 
 mongoose.set("strictQuery", false);
 
@@ -34,6 +34,25 @@ const validateResort = (req, res, next) => {
     next();
   }
 };
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+      const msg = error.details.map(el => el.message).join(',')
+      throw new AppError(msg, 400)
+  } else {
+      next();
+  }
+}
+
+const handleValidationErr = (err) => {
+  return new AppError(`ValidationError: ${err.message}`, 404);
+};
+
+const handleCastErr = (err) => {
+  return new AppError(`CastError: ${err.message}`, 500);
+};
+
 
 app.get("/", (req, res) => {
   res.send("This is the homepage!");
@@ -63,7 +82,7 @@ app.post(
 app.get(
   "/resorts/:id",
   WrapAsync(async (req, res) => {
-    const resort = await Resort.findById(req.params.id);
+    const resort = await Resort.findById(req.params.id).populate('reviews');
     if (!resort) {
       throw new AppError("Resort not found!", 404);
     }
@@ -100,31 +119,22 @@ app.delete(
   })
 );
 
-const handleValidationErr = (err) => {
-  return new AppError(`ValidationError: ${err.message}`, 404);
-};
+app.post('/resorts/:id/reviews', validateReview, WrapAsync(async (req, res) => {
+  const resort = await Resort.findById(req.params.id);
+  const review = new Review(req.body.review);
+  resort.reviews.push(review);
+  // console.log(resort);
+  await review.save();
+  await resort.save();
+  res.redirect(`/resorts/${resort._id}`);
+}));
 
-const handleCastErr = (err) => {
-  return new AppError(`CastError: ${err.message}`, 500);
-};
-
-// // //error handlers
-// app.use((err, req, res, next) => {
-//   if (err.name === "ValidationError") {
-//     // Handle validation errors
-//     err = handleValidationErr(err);
-//     next(err);
-//   } else if (err.name === "CastError") {
-//     // Handle cast errors
-//     err = handleCastErr(err);
-//     next(err);
-//   } else {
-//     // Handle other errors not from mongoose
-//     const { status = 500, message = "Something Went Wrong" } = err;
-//     console.log(err);
-//     res.status(status).send(message);
-//   }
-// });
+app.delete('/resorts/:id/reviews/:reviewId', WrapAsync(async (req, res) => {
+  const { id, reviewId } = req.params;
+  await Resort.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/resorts/${id}`);
+}));
 
 app.all("*", (req, res, next) => {
   next(new AppError("Page Not Found!", 404));
