@@ -7,9 +7,13 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const AppError = require("./utility/AppError");
 const methodOverride = require("method-override");
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
-const resorts = require("./routes/resorts.js");
-const reviews = require("./routes/reviews.js");
+const userRoutes = require('./routes/users');
+const resortRoutes = require("./routes/resorts.js");
+const reviewRoutes = require("./routes/reviews.js");
 
 mongoose.set("strictQuery", false);
 
@@ -41,18 +45,37 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
+  console.log(req.session)
+  // console.log(req.user)
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
   next();
 });
+
+
+
+app.get('/fakeUser', async (req, res) => {
+  const user = new User({email: 'test@gmail.com', username: 'testUser'})
+  const newUser = await User.register(user, 'secret');
+  res.send(newUser);
+})
 
 app.get("/", (req, res) => {
   res.send("This is the homepage!");
 });
 
-app.use("/resorts", resorts);
-app.use("/resorts/:id/reviews", reviews);
+app.use('/', userRoutes);
+app.use("/resorts", resortRoutes);
+app.use("/resorts/:id/reviews", reviewRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError("Page Not Found!", 404));

@@ -4,6 +4,7 @@ const { resortSchema } = require("../schemas.js");
 const WrapAsync = require("../utility/wrapAsync");
 const AppError = require("../utility/AppError");
 const Resort = require("../models/resort");
+const { isLoggedIn } = require('../middleware');
 
 const validateResort = (req, res, next) => {
   const { error } = resortSchema.validate(req.body);
@@ -24,12 +25,12 @@ router.get(
   })
 );
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("resorts/new");
 });
 
 router.post(
-  "/",
+  "/", isLoggedIn,
   validateResort,
   WrapAsync(async (req, res, next) => {
     const resort = new Resort(req.body.resort);
@@ -52,7 +53,7 @@ router.get(
 );
 
 router.get(
-  "/:id/edit",
+  "/:id/edit", isLoggedIn,
   WrapAsync(async (req, res) => {
     const resort = await Resort.findById(req.params.id);
     if (!resort) {
@@ -64,7 +65,7 @@ router.get(
 );
 
 router.put(
-  "/:id",
+  "/:id", isLoggedIn,
   validateResort,
   WrapAsync(async (req, res) => {
     const { id } = req.params;
@@ -75,7 +76,7 @@ router.put(
 );
 
 router.delete(
-  "/:id",
+  "/:id", isLoggedIn,
   WrapAsync(async (req, res) => {
     const { id } = req.params;
     await Resort.findByIdAndDelete(id);
